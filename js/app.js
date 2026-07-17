@@ -714,7 +714,7 @@ function renderWorkoutToday() {
   const workouts = storageGet('howto_workouts', {});
   const todayWorkout = workouts[today];
 
-  if (todayWorkout) {
+  if (todayWorkout && todayWorkout.exercises && todayWorkout.exercises.length > 0) {
     activeWorkout = JSON.parse(JSON.stringify(todayWorkout));
     currentCardIndex = 0;
     showActiveWorkout();
