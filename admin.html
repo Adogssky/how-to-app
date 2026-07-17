@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to — Admin Review</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: var(--bg); }
+    .admin-wrap { max-width: 640px; margin: 0 auto; padding: 24px 20px 60px; position: relative; z-index: 1; }
+    .admin-header { margin-bottom: 28px; }
+    .admin-header h1 { font-family: var(--font-display); font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+    .admin-header p { color: var(--text-secondary); font-size: 15px; }
+    .submission-card {
+      background: var(--surface-solid);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+    .submission-card h3 { font-family: var(--font-display); font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+    .submission-card .meta {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    .submission-card .overview {
+      font-size: 15px;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+    .status-pending { background: rgba(245, 158, 11, 0.12); color: var(--accent); }
+    .status-approved { background: rgba(92, 179, 143, 0.15); color: var(--success); }
+    .status-rejected { background: rgba(224, 108, 117, 0.15); color: var(--danger); }
+    .admin-actions { display: flex; gap: 10px; }
+    .admin-actions button {
+      flex: 1;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .approve-btn { background: var(--success); color: white; }
+    .reject-btn { background: var(--danger); color: white; }
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--text-secondary); }
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+    details summary { cursor: pointer; color: var(--primary); font-weight: 700; }
+    details ol { margin-top: 10px; padding-left: 18px; color: var(--text-secondary); }
+    details li { margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+  </div>
+
+  <div class="admin-wrap">
+    <div class="admin-header">
+      <h1>Review Queue</h1>
+      <p>Approve or reject submitted How-to programs.</p>
+    </div>
+    <div id="submissions-list"></div>
+  </div>
+
+  <script>
+    function loadSubmissions() {
+      try {
+        return JSON.parse(localStorage.getItem('howto_submissions') || '[]');
+      } catch {
+        return [];
+      }
+    }
+
+    function saveSubmissions(list) {
+      localStorage.setItem('howto_submissions', JSON.stringify(list));
+    }
+
+    function renderSubmissions() {
+      const list = loadSubmissions();
+      const container = document.getElementById('submissions-list');
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">📭</div>
+            <h3>No submissions yet</h3>
+            <p>Submissions from the app will appear here.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map((s, index) => `
+        <div class="submission-card">
+          <span class="status-badge status-${s.status}">${s.status.toUpperCase()}</span>
+          <h3>${s.title}</h3>
+          <div class="meta">Submitted ${new Date(s.createdAt).toLocaleString()} · Adjustments left: ${s.adjustmentsLeft ?? 0}</div>
+          <div class="overview">${s.overview}</div>
+          <details>
+            <summary>View generated steps</summary>
+            <ol>
+              ${s.steps.map(step => `<li>${step}</li>`).join('')}
+            </ol>
+          </details>
+          ${s.status === 'pending' ? `
+            <div class="admin-actions" style="margin-top:16px;">
+              <button class="approve-btn" onclick="updateStatus(${index}, 'approved')">Approve</button>
+              <button class="reject-btn" onclick="updateStatus(${index}, 'rejected')">Reject</button>
+            </div>
+          ` : `
+            <div style="margin-top:16px; font-size:13px; color:var(--text-secondary);">
+              Decision made. <button onclick="updateStatus(${index}, 'pending')" style="background:none; border:none; color:var(--primary); cursor:pointer; font-weight:700;">Reopen</button>
+            </div>
+          `}
+        </div>
+      `).join('');
+    }
+
+    function updateStatus(index, status) {
+      const list = loadSubmissions();
+      list[index].status = status;
+      saveSubmissions(list);
+      renderSubmissions();
+    }
+
+    renderSubmissions();
+  </script>
+</body>
+</html>

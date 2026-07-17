@@ -1,0 +1,14 @@
+{
+  "appId": "com.howto.demo",
+  "appName": "How to",
+  "webDir": ".",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500,
+      "backgroundColor": "#F7F7FA"
+    }
+  }
+}

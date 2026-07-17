@@ -1,0 +1,17 @@
+{
+  "name": "how-to-app-demo",
+  "version": "1.0.0",
+  "description": "How to app demo packaged for Android",
+  "private": true,
+  "scripts": {
+    "build": "echo 'No build step needed for this static demo.'",
+    "cap:sync": "npx cap sync android",
+    "cap:open": "npx cap open android",
+    "apk:debug": "cd android && ./gradlew assembleDebug"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0"
+  }
+}

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>How to</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 背景色块 -->
+    <div class="bg-blobs">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+      <div class="blob blob-4"></div>
+      <div class="blob blob-5"></div>
+    </div>
+
+    <!-- 首页 -->
+    <section id="screen-home" class="screen active">
+      <button class="refresh-btn" id="refresh-btn" title="Refresh recommendations">↻</button>
+      <div class="home-content">
+        <div class="home-hero">
+          <h1 class="main-question fade-item" data-delay="200">How to <span>……?</span></h1>
+          <p class="main-subtitle fade-item" data-delay="500">Pick one to get started.</p>
+        </div>
+        <div class="home-cards-scroll pop-in" id="home-cards-scroll">
+          <!-- 动态渲染程序卡片 -->
+        </div>
+      </div>
+      <div class="home-more fade-item" data-delay="1200" id="home-more">
+        <button class="more-btn" id="more-btn" type="button">I know how to……</button>
+      </div>
+    </section>
+
+    <!-- Bike: 车型选择 -->
+    <section id="screen-bike-choose" class="screen">
+      <div class="nav-bar">
+        <button class="back-btn" onclick="goHome()">←</button>
+      </div>
+      <div class="page-content center">
+        <h2 class="page-title fade-in">What kind of bike?</h2>
+        <div class="choice-list">
+          <button class="choice-card" onclick="openBike('road')">
+            <span class="choice-icon">🚴</span>
+            <span class="choice-label">Road bike</span>
+          </button>
+          <button class="choice-card" onclick="openBike('mtb')">
+            <span class="choice-icon">⛰️</span>
+            <span class="choice-label">Mountain bike</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bike: 剪影图 -->
+    <section id="screen-bike-detail" class="screen">
+      <div class="nav-bar">
+        <button class="back-btn" onclick="showScreen('screen-bike-choose')">←</button>
+        <div class="nav-title" id="bike-detail-title">Road bike</div>
+      </div>
+      <div class="bike-canvas-wrapper">
+        <div id="bike-svg-container" class="bike-svg-container"></div>
+        <p class="bike-hint">Tap a part to explore</p>
+      </div>
+      <div id="bike-panel" class="info-panel hidden">
+        <div class="panel-header">
+          <h3 id="bike-part-name">Frame</h3>
+          <button class="close-btn" onclick="closeBikePanel()">×</button>
+        </div>
+        <p id="bike-part-desc" class="panel-desc"></p>
+        <div class="panel-section">
+          <div class="section-title">Specs</div>
+          <div id="bike-specs" class="spec-grid"></div>
+        </div>
+        <div class="panel-section">
+          <div class="section-title">You’ll need</div>
+          <ul id="bike-parts-list" class="parts-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Workout: 主界面 -->
+    <section id="screen-workout" class="screen">
+      <div class="nav-bar">
+        <button class="back-btn" onclick="goHome()">←</button>
+        <div class="nav-title">Workout</div>
+      </div>
+
+      <div class="workout-main">
+        <div id="workout-empty" class="empty-workout">
+          <div class="icon">🏋️</div>
+          <p>Start today’s workout.</p>
+          <button class="add-first-card" onclick="startWorkout()">Start</button>
+        </div>
+
+        <div id="workout-cards-area" class="hidden">
+          <div class="cards-carousel" id="cards-carousel"></div>
+          <div class="card-dots" id="card-dots"></div>
+        </div>
+      </div>
+
+      <div class="workout-tabs">
+        <button class="active" onclick="switchWorkoutTab('today')" id="tab-today">Today</button>
+        <button onclick="switchWorkoutTab('history')" id="tab-history">History</button>
+        <button onclick="switchWorkoutTab('body')" id="tab-body">Body</button>
+      </div>
+    </section>
+
+    <!-- History 浮窗 -->
+    <div class="panel-overlay" id="history-overlay" onclick="closeHistoryPanel()"></div>
+    <div class="history-panel" id="history-panel">
+      <h2>History</h2>
+      <div class="calendar-header" id="calendar-month">July 2026</div>
+      <div class="calendar-grid" id="calendar-grid"></div>
+      <div id="history-detail-card" class="history-detail-card hidden">
+        <h4 id="history-date">Date</h4>
+        <div id="history-exercises"></div>
+      </div>
+    </div>
+
+    <!-- Body 浮窗 -->
+    <div class="panel-overlay" id="body-overlay" onclick="closeBodyPanel()"></div>
+    <div class="body-panel" id="body-panel">
+      <h2>Body</h2>
+
+      <div class="body-visual">
+        <div class="human-figure" id="human-figure">
+          <!-- SVG 由 JS 动态生成 -->
+        </div>
+        <div class="body-legend">
+          <span><span class="legend-dot" style="background:var(--primary)"></span>Upper</span>
+          <span><span class="legend-dot" style="background:var(--success)"></span>Lower</span>
+        </div>
+      </div>
+
+      <div class="body-stats" id="body-stats">
+        <div class="stat-pill">
+          <div class="stat-label">Gender</div>
+          <div class="stat-value" id="bp-gender">—</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-label">Height</div>
+          <div class="stat-value" id="bp-height">—</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-label">Weight</div>
+          <div class="stat-value" id="bp-weight">—</div>
+        </div>
+      </div>
+
+      <button class="edit-profile-btn" id="body-edit-btn" onclick="toggleBodyForm()">Edit profile</button>
+
+      <div class="body-form hidden" id="body-form">
+        <div class="form-row">
+          <label>Gender</label>
+          <select id="edit-gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Height (cm)</label>
+          <input type="number" id="edit-height" placeholder="175">
+        </div>
+        <div class="form-row">
+          <label>Weight (kg)</label>
+          <input type="number" id="edit-weight" placeholder="70">
+        </div>
+        <button class="save-btn" onclick="saveBodyProfile()">Save</button>
+      </div>
+
+      <div class="body-card-custom">
+        <h3 style="font-size:16px; font-weight:800; margin-bottom:12px;">Big 3</h3>
+        <div class="big3-list" id="big3-list">
+          <div class="stat-pill">
+            <div class="stat-label">Squat</div>
+            <div class="stat-value" id="big3-squat">—</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-label">Bench Press</div>
+            <div class="stat-value" id="big3-bench">—</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-label">Deadlift</div>
+            <div class="stat-value" id="big3-deadlift">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workout: 选择动作 -->
+    <section id="screen-exercise-picker" class="screen">
+      <div class="nav-bar">
+        <button class="back-btn" onclick="cancelExercisePicker()">←</button>
+        <div class="nav-title">Add exercise</div>
+      </div>
+      <div class="page-content">
+        <input type="text" class="search-input" id="exercise-search" placeholder="Search exercises…" oninput="filterExercises()">
+        <div id="exercise-categories" class="exercise-categories"></div>
+        <div id="exercise-results" class="exercise-results"></div>
+      </div>
+    </section>
+
+    <!-- 计时器模态 -->
+    <div class="timer-modal" id="timer-modal">
+      <div class="timer-card">
+        <div class="timer-label" id="timer-label">Lifting</div>
+        <div class="timer-big" id="timer-big">00:00</div>
+        <div class="timer-controls">
+          <button class="timer-stop" id="timer-action-btn">Stop</button>
+          <button class="timer-skip" id="timer-skip-btn">Skip</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create: I know how to... -->
+    <section id="screen-create" class="screen">
+      <div class="nav-bar">
+        <button class="back-btn" onclick="goHome()">←</button>
+        <div class="nav-title">I know how to…</div>
+      </div>
+      <div class="page-content center">
+        <div id="create-flow">
+          <div class="create-step active" data-step="1">
+            <div class="step-number">1 / 2</div>
+            <h2 class="step-question">What do you know how to do?</h2>
+            <p class="step-hint">Give it a title, like “How to make pour-over coffee”.</p>
+            <input type="text" class="step-input" id="create-title" placeholder="How to…”>
+            <button class="primary-btn" onclick="createNext(2)">Next</button>
+          </div>
+
+          <div class="create-step" data-step="2">
+            <div class="step-number">2 / 2</div>
+            <h2 class="step-question">How would you describe it?</h2>
+            <p class="step-hint">Describe the flow so others can follow along.</p>
+            <textarea class="step-input" id="create-desc" rows="4" placeholder="e.g. Show a checklist, then guide through each step with a timer."></textarea>
+            <div class="remain-count">Generations left: <span id="create-remain">3</span></div>
+            <div class="step-actions">
+              <button class="text-btn" onclick="createPrev(1)">Back</button>
+              <button class="primary-btn" id="create-generate-btn" onclick="generateProgram()">Generate</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Create: 预览与调整 -->
+    <section id="screen-preview" class="screen">
+      <div class="nav-bar">
+        <button class="back-btn" onclick="showScreen('screen-create')">←</button>
+        <div class="nav-title">Preview</div>
+      </div>
+      <div class="page-content">
+        <div id="preview-card">
+          <!-- 动态内容 -->
+        </div>
+        <div class="adjust-box">
+          <div class="adjust-label">Adjustments left: <span id="adjust-count">3</span></div>
+          <input type="text" class="step-input" id="adjust-input" placeholder="e.g. Add a checklist at the start">
+          <button class="secondary-btn" id="adjust-btn" onclick="adjustProgram()">Adjust</button>
+        </div>
+        <button class="primary-btn" onclick="submitProgram()">Submit for review</button>
+      </div>
+    </section>
+
+    <!-- Create: 提交成功 -->
+    <section id="screen-success" class="screen">
+      <div class="page-content center">
+        <div class="success-box">
+          <div class="success-icon">🎉</div>
+          <h2>Submitted.</h2>
+          <p>Your How-to is now in the review queue.</p>
+          <button class="primary-btn" onclick="goHome()">Back home</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
