@@ -1,0 +1,39 @@
+<view class="home-wrap">
+  <view class="home-hero">
+    <view class="main-question">How to <text class="accent">……?</text></view>
+    <view class="main-subtitle">Pick one to get started.</view>
+  </view>
+
+  <swiper class="home-swiper" indicator-dots="{{true}}" current="{{currentIndex}}" bindchange="onSwiperChange">
+    <swiper-item wx:for="{{programs}}" wx:key="id" class="home-swiper-item">
+      <view class="program-card {{item.gradient}}" data-path="{{item.path}}" bindtap="onCardTap">
+        <view class="card-main">
+          <view class="card-icon">{{item.icon}}</view>
+          <view class="card-title">{{item.title}}</view>
+          <view class="card-subtitle">{{item.subtitle}}</view>
+        </view>
+        <view class="card-actions" catchtap="catchActions">
+          <view class="vote-btn vote-like" data-id="{{item.id}}" data-type="like" catchtap="onVote">
+            <text>♥</text>
+            <view class="vote-dots">
+              <view wx:for="{{item.likeDots}}" wx:key="*this" class="vote-cluster" style="background: var(--success);"></view>
+              <text class="vote-count" style="color: var(--success);">{{item.likes}}</text>
+            </view>
+          </view>
+          <view class="vote-btn vote-dislike" data-id="{{item.id}}" data-type="dislike" catchtap="onVote">
+            <text>💔</text>
+            <view class="vote-dots">
+              <view wx:for="{{item.dislikeDots}}" wx:key="*this" class="vote-cluster" style="background: var(--danger);"></view>
+              <text class="vote-count" style="color: var(--danger);">{{item.dislikes}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </swiper-item>
+  </swiper>
+
+  <view class="home-controls">
+    <button class="refresh-btn {{remainRefresh <= 0 ? 'disabled' : ''}}" bindtap="onRefresh">↺</button>
+    <view class="more-btn" bindtap="onMoreTap">I know how to……</view>
+  </view>
+</view>

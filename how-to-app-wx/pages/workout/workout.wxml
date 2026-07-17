@@ -1,0 +1,116 @@
+<view class="workout-wrap">
+  <view class="nav-bar">
+    <button class="nav-btn" bindtap="goBack">←</button>
+    <view class="nav-title">Workout</view>
+    <button class="nav-btn" bindtap="onResetToday">↺</button>
+  </view>
+
+  <view wx:if="{{tab === 'today'}}" class="workout-main">
+    <view wx:if="{{!activeWorkout || activeWorkout.exercises.length === 0}}" class="empty-workout">
+      <view class="empty-icon">🏋️</view>
+      <text>Start today’s workout.</text>
+      <button class="start-btn" bindtap="startDefaultWorkout">Start</button>
+    </view>
+
+    <swiper wx:else class="card-swiper" current="{{currentIndex}}" bindchange="onSwiperChange">
+      <swiper-item wx:for="{{activeWorkout.exercises}}" wx:key="index" wx:for-index="exIndex" class="card-swiper-item">
+        <view wx:if="{{item.type === 'blank'}}" class="exercise-card blank-card" bindtap="onBlankCardTap">
+          <view class="blank-content">
+            <view class="blank-icon">+</view>
+            <text>Add exercise</text>
+          </view>
+        </view>
+
+        <view wx:else class="exercise-card">
+          <scroll-view class="card-scroll" scroll-y="{{true}}">
+            <view class="card-image">
+              <image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFit" show-menu-by-longpress="{{false}}"></image>
+              <view wx:else class="card-emoji">🏋️</view>
+            </view>
+
+            <view class="card-title">{{item.name}}</view>
+            <view class="card-sub">Set {{item.completedCount}}/{{item.sets.length}} completed · {{item.equipment}}</view>
+
+            <button class="details-toggle" data-ex="{{exIndex}}" bindtap="onToggleDetails">{{item.detailsOpen ? 'Details ▲' : 'Details ▼'}}</button>
+
+            <view wx:if="{{item.detailsOpen}}" class="exercise-details">
+              <view class="details-gif">
+                <image wx:if="{{item.gif_url}}" src="{{item.gif_url}}" mode="aspectFit"></image>
+                <view wx:else class="card-emoji">🏋️</view>
+              </view>
+              <view class="details-desc">{{item.instructions || 'No description available.'}}</view>
+            </view>
+
+            <view class="sets-list">
+              <view wx:for="{{item.sets}}" wx:key="setIndex" wx:for-index="setIndex" wx:for-item="set" class="set-item">
+                <text class="set-label">Set {{setIndex + 1}}</text>
+                <input class="set-input" type="digit" placeholder="kg" value="{{set.weight}}" data-ex="{{exIndex}}" data-set="{{setIndex}}" bindblur="onWeightChange" disabled="{{set.completed}}" />
+                <input class="set-input" type="number" placeholder="reps" value="{{set.reps}}" data-ex="{{exIndex}}" data-set="{{setIndex}}" bindblur="onRepsChange" disabled="{{set.completed}}" />
+
+                <button wx:if="{{set.completed}}" class="set-btn done" disabled>{{set.restText}}</button>
+                <button wx:elif="{{!set.weight || !set.reps}}" class="set-btn locked" disabled>Start</button>
+                <button wx:else class="set-btn start" data-ex="{{exIndex}}" data-set="{{setIndex}}" bindtap="onStartSet">Start</button>
+              </view>
+            </view>
+
+            <view class="card-actions">
+              <button data-ex="{{exIndex}}" bindtap="onAddSet">+ Add set</button>
+              <button data-ex="{{exIndex}}" bindtap="onRemoveExercise">Remove</button>
+            </view>
+          </scroll-view>
+        </view>
+      </swiper-item>
+    </swiper>
+  </view>
+
+  <view wx:if="{{tab === 'history'}}" class="workout-main">
+    <view class="empty-workout">
+      <text>History panel is under construction.</text>
+    </view>
+  </view>
+
+  <view wx:if="{{tab === 'body'}}" class="workout-main">
+    <view class="container">
+      <view class="card" style="padding: 32rpx; margin-bottom: 32rpx;">
+        <view style="font-size: 32rpx; font-weight: 800; margin-bottom: 24rpx;">Profile</view>
+        <view style="display: flex; gap: 16rpx; flex-wrap: wrap;">
+          <picker mode="selector" range="{{['male','female','other']}}" value="{{bodyProfile.gender === 'male' ? 0 : bodyProfile.gender === 'female' ? 1 : 2}}" data-field="gender" bindchange="onBodyInput">
+            <view style="padding: 20rpx; background: var(--bg); border-radius: 16rpx;">Gender: {{bodyProfile.gender}}</view>
+          </picker>
+          <input type="digit" placeholder="Height cm" value="{{bodyProfile.height}}" data-field="height" bindblur="onBodyInput" style="padding: 20rpx; background: var(--bg); border-radius: 16rpx; flex: 1; min-width: 200rpx;" />
+          <input type="digit" placeholder="Weight kg" value="{{bodyProfile.weight}}" data-field="weight" bindblur="onBodyInput" style="padding: 20rpx; background: var(--bg); border-radius: 16rpx; flex: 1; min-width: 200rpx;" />
+        </view>
+      </view>
+
+      <view class="card" style="padding: 32rpx; margin-bottom: 32rpx;">
+        <view style="font-size: 32rpx; font-weight: 800; margin-bottom: 24rpx;">Big 3</view>
+        <view style="display: flex; gap: 16rpx; flex-wrap: wrap;">
+          <input type="digit" placeholder="Squat kg" value="{{bodyProfile.squat}}" data-field="squat" bindblur="onBodyInput" style="padding: 20rpx; background: var(--bg); border-radius: 16rpx; flex: 1; min-width: 200rpx;" />
+          <input type="digit" placeholder="Bench kg" value="{{bodyProfile.bench}}" data-field="bench" bindblur="onBodyInput" style="padding: 20rpx; background: var(--bg); border-radius: 16rpx; flex: 1; min-width: 200rpx;" />
+          <input type="digit" placeholder="Deadlift kg" value="{{bodyProfile.deadlift}}" data-field="deadlift" bindblur="onBodyInput" style="padding: 20rpx; background: var(--bg); border-radius: 16rpx; flex: 1; min-width: 200rpx;" />
+        </view>
+      </view>
+
+      <button class="btn-primary" bindtap="saveBodyProfile">Save profile</button>
+    </view>
+  </view>
+
+  <!-- Timer modal -->
+  <view wx:if="{{showTimer}}" class="timer-mask">
+    <view class="timer-card">
+      <view class="timer-label">{{timerLabel}}</view>
+      <view class="timer-big">{{timerText}}</view>
+      <view class="timer-controls">
+        <button class="timer-stop" bindtap="onTimerAction">{{timerAction}}</button>
+        <button wx:if="{{timerMode === 'rest'}}" class="timer-skip" bindtap="onSkipTimer">Skip</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- Bottom tabs -->
+  <view class="workout-tabs">
+    <button class="tab {{tab === 'today' ? 'active' : ''}}" data-tab="today" bindtap="switchTab">Today</button>
+    <button class="tab {{tab === 'history' ? 'active' : ''}}" data-tab="history" bindtap="switchTab">History</button>
+    <button class="tab {{tab === 'body' ? 'active' : ''}}" data-tab="body" bindtap="switchTab">Body</button>
+  </view>
+</view>

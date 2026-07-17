@@ -1,0 +1,20 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/workout/workout",
+    "pages/exercise-picker/exercise-picker",
+    "pages/bike/bike"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#f6f4f1",
+    "navigationBarTitleText": "How to",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f6f4f1"
+  },
+  "tabBar": {
+    "custom": true
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

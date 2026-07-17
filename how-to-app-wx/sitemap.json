@@ -1,0 +1,9 @@
+{
+  "desc": "How to app sitemap",
+  "rules": [
+    {
+      "action": "allow",
+      "page": "*"
+    }
+  ]
+}

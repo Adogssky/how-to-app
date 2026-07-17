@@ -1,0 +1,341 @@
+.workout-wrap {
+  min-height: 100vh;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.workout-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 32rpx 160rpx;
+}
+
+.empty-workout {
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 24rpx;
+}
+
+.empty-workout text {
+  display: block;
+  font-size: 32rpx;
+  margin-bottom: 40rpx;
+}
+
+.start-btn {
+  background: var(--text);
+  color: #fff;
+  border-radius: 50rpx;
+  padding: 28rpx 72rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  display: inline-block;
+}
+
+.card-swiper {
+  width: 100%;
+  height: 900rpx;
+}
+
+.card-swiper-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.exercise-card {
+  width: 86%;
+  height: 820rpx;
+  background: var(--surface-solid);
+  border: 1rpx solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.06);
+  padding: 32rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.exercise-card:nth-child(5n+1) { background: linear-gradient(160deg, #ffffff 0%, var(--c-lavender) 100%); }
+.exercise-card:nth-child(5n+2) { background: linear-gradient(160deg, #ffffff 0%, var(--c-sky) 100%); }
+.exercise-card:nth-child(5n+3) { background: linear-gradient(160deg, #ffffff 0%, var(--c-mint) 100%); }
+.exercise-card:nth-child(5n+4) { background: linear-gradient(160deg, #ffffff 0%, var(--c-peach) 100%); }
+.exercise-card:nth-child(5n+5) { background: linear-gradient(160deg, #ffffff 0%, var(--c-rose) 100%); }
+
+.card-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.blank-card {
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border-style: dashed;
+  cursor: pointer;
+}
+
+.blank-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+  color: var(--text-secondary);
+}
+
+.blank-icon {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56rpx;
+  font-weight: 300;
+}
+
+.card-image {
+  width: 100%;
+  height: 300rpx;
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24rpx;
+}
+
+.card-image image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.card-emoji {
+  font-size: 96rpx;
+}
+
+.card-title {
+  font-size: 44rpx;
+  font-weight: 800;
+  margin-bottom: 8rpx;
+}
+
+.card-sub {
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  margin-bottom: 24rpx;
+}
+
+.details-toggle {
+  background: rgba(255,255,255,0.6);
+  border: 1rpx solid var(--line);
+  border-radius: 16rpx;
+  padding: 16rpx 24rpx;
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  margin-bottom: 24rpx;
+  text-align: left;
+}
+
+.exercise-details {
+  margin-bottom: 24rpx;
+}
+
+.details-gif {
+  width: 100%;
+  height: 300rpx;
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16rpx;
+}
+
+.details-gif image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.details-desc {
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.set-item {
+  display: grid;
+  grid-template-columns: 80rpx 1fr 1fr 140rpx;
+  gap: 12rpx;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.set-label {
+  font-size: 24rpx;
+  font-weight: 800;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.set-input {
+  padding: 18rpx 12rpx;
+  border: 1rpx solid var(--line);
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  text-align: center;
+  background: rgba(255,255,255,0.6);
+}
+
+.set-btn {
+  padding: 18rpx 10rpx;
+  border-radius: 16rpx;
+  border: none;
+  font-size: 22rpx;
+  font-weight: 800;
+  text-align: center;
+}
+
+.set-btn.start { background: var(--success); color: white; }
+.set-btn.stop { background: var(--danger); color: white; }
+.set-btn.next { background: var(--primary); color: white; }
+.set-btn.done { background: var(--line); color: var(--text-secondary); }
+.set-btn.locked { background: var(--line); color: var(--text-secondary); }
+
+.card-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 8rpx;
+}
+
+.card-actions button {
+  flex: 1;
+  padding: 18rpx 0;
+  border-radius: 16rpx;
+  border: 1rpx solid var(--line);
+  background: rgba(255,255,255,0.6);
+  font-size: 26rpx;
+  color: var(--text);
+}
+
+.workout-tabs {
+  position: fixed;
+  bottom: 40rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  background: var(--surface-solid);
+  border: 1rpx solid var(--line);
+  border-radius: 50rpx;
+  padding: 10rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.08);
+}
+
+.workout-tabs .tab {
+  padding: 20rpx 48rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+}
+
+.workout-tabs .tab.active {
+  background: var(--text);
+  color: #fff;
+}
+
+/* Timer modal */
+.timer-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.timer-card {
+  width: 76%;
+  background: var(--surface-solid);
+  border-radius: var(--radius);
+  padding: 64rpx 48rpx;
+  text-align: center;
+}
+
+.timer-label {
+  font-size: 32rpx;
+  color: var(--text-secondary);
+  margin-bottom: 24rpx;
+}
+
+.timer-big {
+  font-size: 120rpx;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 48rpx;
+}
+
+.timer-controls {
+  display: flex;
+  gap: 24rpx;
+  justify-content: center;
+}
+
+.timer-controls button {
+  padding: 24rpx 56rpx;
+  border-radius: 50rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  border: none;
+}
+
+.timer-stop { background: var(--danger); color: #fff; }
+.timer-skip { background: var(--line); color: var(--text); }
+
+/* History / Body panels */
+.side-panel {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 80%;
+  background: var(--surface-solid);
+  box-shadow: -8rpx 0 32rpx rgba(0,0,0,0.08);
+  z-index: 90;
+  padding: 48rpx 32rpx;
+  box-sizing: border-box;
+  transition: transform 0.3s ease;
+}
+
+.side-panel.left { left: 0; transform: translateX(-100%); }
+.side-panel.left.open { transform: translateX(0); }
+.side-panel.right { right: 0; transform: translateX(100%); }
+.side-panel.right.open { transform: translateX(0); }
+
+.panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.25);
+  z-index: 80;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.panel-overlay.show {
+  opacity: 1;
+  pointer-events: all;
+}

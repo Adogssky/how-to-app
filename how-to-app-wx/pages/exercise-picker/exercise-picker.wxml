@@ -1,0 +1,34 @@
+<view class="picker-wrap">
+  <view class="nav-bar">
+    <button class="nav-btn" bindtap="goBack">←</button>
+    <view class="nav-title">Add exercise</view>
+    <view class="nav-btn plain"></view>
+  </view>
+
+  <view class="search-box">
+    <input class="search-input" placeholder="Search exercises…" value="{{search}}" bindinput="onSearchInput" />
+  </view>
+
+  <scroll-view class="category-chips" scroll-x="{{true}}">
+    <button wx:for="{{categories}}" wx:key="*this" class="category-chip {{selectedCategory === item ? 'active' : ''}}" data-cat="{{item}}" bindtap="onCategoryTap">{{item}}</button>
+  </scroll-view>
+
+  <scroll-view class="exercise-results" scroll-y="{{true}}">
+    <view wx:if="{{exercises.length === 0}}" class="empty-state">No exercises found.</view>
+
+    <view wx:for="{{exercises}}" wx:key="id" class="result-item">
+      <view class="result-main">
+        <view class="result-thumb">
+          <image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill"></image>
+          <text wx:else>🏋️</text>
+        </view>
+        <view class="result-info">
+          <view class="result-name">{{item.name}}</view>
+          <view class="result-meta">{{item.body_part}} · {{item.equipment}}</view>
+        </view>
+        <button class="result-select" data-ex="{{item}}" bindtap="onSelectExercise">Select</button>
+      </view>
+      <view wx:if="{{item.instructions}}" class="result-desc">{{item.instructions}}</view>
+    </view>
+  </scroll-view>
+</view>

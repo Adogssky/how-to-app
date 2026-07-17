@@ -1,0 +1,28 @@
+<view class="bike-wrap">
+  <view class="nav-bar">
+    <button class="nav-btn" bindtap="goBack">←</button>
+    <view class="nav-title">Build a bike</view>
+    <view class="nav-btn plain"></view>
+  </view>
+
+  <view wx:if="{{!chosen}}" class="bike-content">
+    <view class="choice-card" data-type="road" bindtap="chooseBike">
+      <view class="choice-icon">🚴</view>
+      <view class="choice-label">Road bike</view>
+    </view>
+    <view class="choice-card" data-type="mtb" bindtap="chooseBike">
+      <view class="choice-icon">⛰️</view>
+      <view class="choice-label">Mountain bike</view>
+    </view>
+  </view>
+
+  <view wx:else class="bike-detail">
+    <view class="title">{{title}}</view>
+    <view class="desc">{{desc}}</view>
+
+    <view wx:for="{{parts}}" wx:key="name" class="part-card">
+      <view class="name">{{item.name}}</view>
+      <view class="desc">{{item.desc}}</view>
+    </view>
+  </view>
+</view>
