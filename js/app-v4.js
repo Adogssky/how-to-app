@@ -15,54 +15,6 @@ const programLibrary = [
     icon: '💪',
     screen: 'screen-workout',
     gradient: 2
-  },
-  {
-    id: 'make-pour-over-coffee',
-    title: 'make pour-over coffee',
-    subtitle: 'Brew a clean cup with step-by-step timing.',
-    icon: '☕',
-    screen: 'screen-ugc',
-    gradient: 3
-  },
-  {
-    id: 'cook-perfect-eggs',
-    title: 'cook perfect eggs',
-    subtitle: 'Soft, medium, or hard-boiled every time.',
-    icon: '🍳',
-    screen: 'screen-ugc',
-    gradient: 4
-  },
-  {
-    id: 'change-a-tire',
-    title: 'change a tire',
-    subtitle: 'Roadside flat fix from jack to torque.',
-    icon: '🔧',
-    screen: 'screen-ugc',
-    gradient: 5
-  },
-  {
-    id: 'plant-a-succulent',
-    title: 'plant a succulent',
-    subtitle: 'Soil, pot, and watering basics for beginners.',
-    icon: '🌵',
-    screen: 'screen-ugc',
-    gradient: 1
-  },
-  {
-    id: 'tie-a-tie',
-    title: 'tie a tie',
-    subtitle: 'Four-in-hand knot made simple.',
-    icon: '👔',
-    screen: 'screen-ugc',
-    gradient: 2
-  },
-  {
-    id: 'make-a-smoothie',
-    title: 'make a smoothie',
-    subtitle: 'Fruit, greens, liquid, and blend ratios.',
-    icon: '🥤',
-    screen: 'screen-ugc',
-    gradient: 3
   }
 ];
 
@@ -519,48 +471,93 @@ function goHome() {
 
 // ===================== 首页 =====================
 function getProgramsToShow() {
-  const approved = getApprovedPrograms().map(p => ({
-    id: p.id,
-    title: p.title,
-    subtitle: p.subtitle,
-    icon: p.icon,
-    screen: p.screen,
-    gradient: (Math.floor(Math.random() * 5) + 1)
-  }));
+  // 从程序库中随机挑选最多 3 个
+  const shuffled = shuffleArray([...programLibrary]);
+  return shuffled.slice(0, Math.min(3, programLibrary.length));
+}
 
-  // 固定置顶两个核心程序
-  const pinned = [
-    programLibrary.find(p => p.id === 'build-a-bike'),
-    programLibrary.find(p => p.id === 'workout-at-gym')
-  ].filter(Boolean);
+function getProgramVotes(id) {
+  const votes = storageGet('howto_program_votes', {});
+  if (!votes[id]) votes[id] = { likes: 0, dislikes: 0 };
+  return votes[id];
+}
 
-  // 其余程序随机补满到 5 个
-  const restPool = programLibrary.filter(p => p.id !== 'build-a-bike' && p.id !== 'workout-at-gym');
-  const others = shuffleArray([...restPool, ...approved]).slice(0, Math.max(0, 5 - pinned.length));
+function recordProgramVote(id, type) {
+  const votes = storageGet('howto_program_votes', {});
+  if (!votes[id]) votes[id] = { likes: 0, dislikes: 0 };
+  if (type === 'like') votes[id].likes++;
+  if (type === 'dislike') votes[id].dislikes++;
+  storageSet('howto_program_votes', votes);
+}
 
-  return [...pinned, ...others];
+let homeRefreshCount = 0;
+const MAX_REFRESH_COUNT = 3;
+
+function canRefreshHome() {
+  return homeRefreshCount < MAX_REFRESH_COUNT;
 }
 
 function renderHomeCards() {
   currentPrograms = getProgramsToShow();
   homeCardIndex = 0;
   const container = document.getElementById('home-cards-container');
-  container.innerHTML = currentPrograms.map((p, i) => `
+  container.innerHTML = currentPrograms.map((p, i) => {
+    const votes = getProgramVotes(p.id);
+    return `
     <div class="home-program-card card-gradient-${p.gradient} ${getHomeCardClass(i)}"
       data-index="${i}"
-      onclick="onHomeCardClick('${p.screen}', '${p.id}')"
       ontouchstart="handleHomeTouchStart(event)"
       ontouchend="handleHomeTouchEnd(event)">
-      <div class="card-icon">${p.icon}</div>
-      <div>
-        <h3>${p.title}</h3>
-        <p>${p.subtitle}</p>
+      <div class="home-card-main" onclick="onHomeCardClick('${p.screen}', '${p.id}')">
+        <div class="card-icon">${p.icon}</div>
+        <div class="home-card-text">
+          <h3>${p.title}</h3>
+          <p>${p.subtitle}</p>
+        </div>
       </div>
-      <div class="card-arrow">→</div>
+      <div class="home-card-actions">
+        <button class="vote-btn vote-like" onclick="onProgramVote(event, '${p.id}', 'like')" title="Like">
+          <span class="vote-icon">♥</span>
+          <span class="vote-dots">${renderVoteDots(votes.likes, 'like')}</span>
+        </button>
+        <button class="vote-btn vote-dislike" onclick="onProgramVote(event, '${p.id}', 'dislike')" title="Dislike">
+          <span class="vote-icon">💔</span>
+          <span class="vote-dots">${renderVoteDots(votes.dislikes, 'dislike')}</span>
+        </button>
+      </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   renderHomeDots();
+}
+
+function renderVoteDots(count, type) {
+  const full = Math.min(Math.floor(count / 5), 5);
+  const remainder = count % 5;
+  const color = type === 'like' ? 'var(--success)' : 'var(--danger)';
+  let html = '';
+  for (let i = 0; i < full; i++) {
+    html += `<span class="vote-cluster" style="background:${color}"></span>`;
+  }
+  if (remainder > 0 || count === 0) {
+    html += `<span class="vote-count" style="color:${color}">${count}</span>`;
+  }
+  return html;
+}
+
+function onProgramVote(event, id, type) {
+  event.stopPropagation();
+  recordProgramVote(id, type);
+  const card = event.currentTarget.closest('.home-program-card');
+  const isLike = type === 'like';
+  const votes = getProgramVotes(id);
+  card.querySelector('.vote-like .vote-dots').innerHTML = renderVoteDots(votes.likes, 'like');
+  card.querySelector('.vote-dislike .vote-dots').innerHTML = renderVoteDots(votes.dislikes, 'dislike');
+  card.querySelector(isLike ? '.vote-like' : '.vote-dislike').classList.add('voted');
+  setTimeout(() => {
+    card.querySelector(isLike ? '.vote-like' : '.vote-dislike').classList.remove('voted');
+  }, 300);
 }
 
 function onHomeCardClick(screen, id) {
@@ -638,6 +635,12 @@ function runHomeAnimation() {
 }
 
 function refreshPrograms() {
+  if (!canRefreshHome()) {
+    showRefreshLimitToast();
+    return;
+  }
+  homeRefreshCount++;
+
   const btn = document.getElementById('refresh-btn');
   btn.classList.add('spin');
   const container = document.getElementById('home-cards-container');
@@ -649,7 +652,32 @@ function refreshPrograms() {
     container.style.opacity = '1';
     container.style.transform = 'scale(1)';
     btn.classList.remove('spin');
+    updateRefreshButtonState();
   }, 400);
+}
+
+function updateRefreshButtonState() {
+  const btn = document.getElementById('refresh-btn');
+  if (!btn) return;
+  const remain = MAX_REFRESH_COUNT - homeRefreshCount;
+  btn.title = remain > 0 ? `${remain} refreshes left` : 'No refreshes left';
+  if (remain <= 0) {
+    btn.classList.add('disabled');
+  } else {
+    btn.classList.remove('disabled');
+  }
+}
+
+function showRefreshLimitToast() {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = 'Come back tomorrow for fresh picks.';
+  document.body.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('show'));
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 2000);
 }
 
 // 绑定事件
@@ -675,6 +703,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   renderHomeCards();
+  updateRefreshButtonState();
   runHomeAnimation();
 });
 
@@ -834,22 +863,24 @@ function renderExerciseCard(ex, i) {
   return `
     <div class="exercise-card ${getCardClass(i)}" data-index="${i}">
       <div class="card-pattern"></div>
-      <div class="card-image-area" id="card-img-${i}">
-        <div class="card-image-placeholder">${getExerciseEmoji(ex.name)}</div>
-      </div>
-      <h3>${ex.name}</h3>
-      <div class="card-sub">Set ${completed}/${total} completed · ${ex.equipment}</div>
-      <button class="details-toggle" onclick="toggleExerciseDetails(${i})">Details ▼</button>
-      <div class="exercise-details hidden" id="${detailsId}">
-        <div class="details-gif" id="details-gif-${i}">
-          <div class="gif-placeholder">Loading…</div>
+      <div class="card-scroll">
+        <div class="card-image-area" id="card-img-${i}">
+          <div class="card-image-placeholder">${getExerciseEmoji(ex.name)}</div>
         </div>
-        <p class="details-desc">${escapeHtml(ex.instructions || 'No description available.')}</p>
-      </div>
-      <div class="sets-list">${setsHtml}</div>
-      <div class="card-actions">
-        <button onclick="addSet(${i})">+ Add set</button>
-        <button onclick="removeExercise(${i})">Remove</button>
+        <h3>${ex.name}</h3>
+        <div class="card-sub">Set ${completed}/${total} completed · ${ex.equipment}</div>
+        <button class="details-toggle" onclick="toggleExerciseDetails(${i})">Details ▼</button>
+        <div class="exercise-details hidden" id="${detailsId}">
+          <div class="details-gif" id="details-gif-${i}">
+            <div class="gif-placeholder">Loading…</div>
+          </div>
+          <p class="details-desc">${escapeHtml(ex.instructions || 'No description available.')}</p>
+        </div>
+        <div class="sets-list">${setsHtml}</div>
+        <div class="card-actions">
+          <button onclick="addSet(${i})">+ Add set</button>
+          <button onclick="removeExercise(${i})">Remove</button>
+        </div>
       </div>
     </div>
   `;
