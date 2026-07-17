@@ -818,6 +818,17 @@ function startWorkout() {
   startDefaultWorkout();
 }
 
+function resetTodayWorkout() {
+  if (!confirm('Reset today’s workout? This will clear all records for today.')) return;
+  const today = todayKey();
+  const workouts = storageGet('howto_workouts', {});
+  delete workouts[today];
+  storageSet('howto_workouts', workouts);
+  activeWorkout = null;
+  currentCardIndex = 0;
+  startDefaultWorkout();
+}
+
 function showActiveWorkout() {
   document.getElementById('workout-empty').classList.add('hidden');
   document.getElementById('workout-cards-area').classList.remove('hidden');
