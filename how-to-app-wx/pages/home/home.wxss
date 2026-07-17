@@ -133,6 +133,7 @@
 }
 
 .refresh-btn {
+  flex: 0 0 88rpx;
   width: 88rpx;
   height: 88rpx;
   border-radius: 50%;
@@ -144,6 +145,9 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.06);
+  padding: 0;
+  margin: 0;
+  line-height: 1;
 }
 
 .refresh-btn.disabled {
