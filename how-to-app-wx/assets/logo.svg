@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="logoBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f6f4f1" />
+      <stop offset="100%" stop-color="#e4def5" />
+    </linearGradient>
+    <filter id="logoBlur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="30" />
+    </filter>
+  </defs>
+
+  <rect width="400" height="400" rx="80" fill="url(#logoBg)" />
+
+  <circle cx="80" cy="100" r="70" fill="#cec5ee" opacity="0.6" filter="url(#logoBlur)" />
+  <circle cx="320" cy="120" r="80" fill="#cfe5f6" opacity="0.55" filter="url(#logoBlur)" />
+  <circle cx="300" cy="300" r="90" fill="#cce9e0" opacity="0.5" filter="url(#logoBlur)" />
+  <circle cx="100" cy="310" r="60" fill="#f5dccf" opacity="0.55" filter="url(#logoBlur)" />
+
+  <rect x="90" y="110" width="220" height="180" rx="32" fill="#ffffff" opacity="0.9" />
+  <rect x="90" y="110" width="220" height="180" rx="32" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="2" />
+
+  <text x="200" y="210" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="52" font-weight="800" fill="#171717">How to</text>
+  <text x="200" y="255" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="32" font-weight="700" fill="#6b5ce7">……?</text>
+</svg>

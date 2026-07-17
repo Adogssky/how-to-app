@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 800" width="1000" height="800">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f6f4f1" />
+      <stop offset="100%" stop-color="#e4def5" />
+    </linearGradient>
+    <filter id="blur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="60" />
+    </filter>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1000" height="800" fill="url(#bg)" />
+
+  <!-- 装饰色块 -->
+  <circle cx="120" cy="160" r="140" fill="#cec5ee" opacity="0.6" filter="url(#blur)" />
+  <circle cx="880" cy="200" r="160" fill="#cfe5f6" opacity="0.55" filter="url(#blur)" />
+  <circle cx="800" cy="650" r="180" fill="#cce9e0" opacity="0.5" filter="url(#blur)" />
+  <circle cx="180" cy="680" r="120" fill="#f5dccf" opacity="0.55" filter="url(#blur)" />
+  <circle cx="500" cy="400" r="90" fill="#edd3dd" opacity="0.4" filter="url(#blur)" />
+
+  <!-- 中心卡片 -->
+  <rect x="220" y="220" width="560" height="360" rx="48" fill="#ffffff" opacity="0.85" />
+  <rect x="220" y="220" width="560" height="360" rx="48" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="2" />
+
+  <!-- 标题 -->
+  <text x="500" y="360" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="96" font-weight="800" fill="#171717">How to</text>
+  <text x="500" y="430" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="48" font-weight="700" fill="#6b5ce7">……?</text>
+
+  <!-- 副标题 -->
+  <text x="500" y="510" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="400" fill="#818181">Learn anything, step by step.</text>
+
+  <!-- 底部装饰小点 -->
+  <circle cx="430" cy="580" r="8" fill="#6b5ce7" opacity="0.6" />
+  <circle cx="460" cy="580" r="8" fill="#5cb38f" opacity="0.6" />
+  <circle cx="490" cy="580" r="8" fill="#d99a5e" opacity="0.6" />
+  <circle cx="520" cy="580" r="8" fill="#e06c75" opacity="0.6" />
+  <circle cx="550" cy="580" r="8" fill="#6b5ce7" opacity="0.6" />
+  <circle cx="580" cy="580" r="8" fill="#5cb38f" opacity="0.6" />
+</svg>
