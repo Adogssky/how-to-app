@@ -534,8 +534,8 @@ function getProgramsToShow() {
 
 function renderHomeCards() {
   currentPrograms = getProgramsToShow();
-  const scroll = document.getElementById('home-cards-scroll');
-  scroll.innerHTML = currentPrograms.map((p, i) => `
+  const container = document.getElementById('home-cards-container');
+  container.innerHTML = currentPrograms.map((p, i) => `
     <div class="home-program-card card-gradient-${p.gradient} pop-in" data-delay="${800 + i * 100}"
       onclick="openProgramCard('${p.screen}', '${p.id}')">
       <div class="card-icon">${p.icon}</div>
@@ -549,7 +549,7 @@ function renderHomeCards() {
 
   // stagger pop-in
   setTimeout(() => {
-    scroll.querySelectorAll('.pop-in').forEach((el, i) => {
+    container.querySelectorAll('.pop-in').forEach((el, i) => {
       setTimeout(() => el.classList.add('show'), i * 100);
     });
   }, 50);
@@ -589,14 +589,14 @@ function runHomeAnimation() {
 function refreshPrograms() {
   const btn = document.getElementById('refresh-btn');
   btn.classList.add('spin');
-  const scroll = document.getElementById('home-cards-scroll');
-  scroll.style.opacity = '0';
-  scroll.style.transform = 'translateY(10px)';
+  const container = document.getElementById('home-cards-container');
+  container.style.opacity = '0';
+  container.style.transform = 'translateY(10px)';
 
   setTimeout(() => {
     renderHomeCards();
-    scroll.style.opacity = '1';
-    scroll.style.transform = 'translateY(0)';
+    container.style.opacity = '1';
+    container.style.transform = 'translateY(0)';
     btn.classList.remove('spin');
   }, 400);
 }

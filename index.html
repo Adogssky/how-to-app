@@ -19,14 +19,17 @@
 
     <!-- 首页 -->
     <section id="screen-home" class="screen active">
-      <button class="refresh-btn" id="refresh-btn" title="Refresh recommendations">↻</button>
       <div class="home-content">
         <div class="home-hero">
           <h1 class="main-question fade-item" data-delay="200">How to <span>……?</span></h1>
           <p class="main-subtitle fade-item" data-delay="500">Pick one to get started.</p>
         </div>
         <div class="home-cards-scroll pop-in" id="home-cards-scroll">
-          <!-- 动态渲染程序卡片 -->
+          <div id="home-cards-container" class="home-cards-container"><!-- 动态渲染程序卡片 --></div>
+          <button class="refresh-btn" id="refresh-btn" type="button" title="Refresh recommendations">
+            <span class="refresh-icon">↻</span>
+            <span class="refresh-label">Refresh</span>
+          </button>
         </div>
       </div>
       <div class="home-more fade-item" data-delay="1200" id="home-more">
