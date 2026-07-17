@@ -836,6 +836,7 @@ body {
 .exercise-card {
   flex: 0 0 88%;
   width: 88%;
+  min-width: 88%;
   height: 100%;
   scroll-snap-align: center;
   border-radius: var(--radius);
@@ -883,6 +884,9 @@ body {
 }
 
 .exercise-card.blank-card {
+  flex: 0 0 88%;
+  width: 88%;
+  min-width: 88%;
   align-items: center;
   justify-content: center;
   background: var(--surface);
