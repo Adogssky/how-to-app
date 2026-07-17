@@ -733,13 +733,13 @@ body {
 }
 
 .exercise-card.prev {
-  transform: translateX(-95%) scale(0.78) rotateY(18deg);
+  transform: translateX(-108%) scale(0.8);
   opacity: 0.35;
   z-index: 3;
 }
 
 .exercise-card.next {
-  transform: translateX(95%) scale(0.78) rotateY(-18deg);
+  transform: translateX(108%) scale(0.8);
   opacity: 0.35;
   z-index: 3;
 }
