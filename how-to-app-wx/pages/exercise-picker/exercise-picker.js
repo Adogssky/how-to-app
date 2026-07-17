@@ -1,5 +1,5 @@
 const app = getApp();
-const { buildImageUrl } = require('../../utils/request');
+const { loadExerciseLibrary } = require('../../utils/request');
 
 Page({
   data: {
@@ -17,11 +17,15 @@ Page({
     this.loadExercises();
   },
 
-  loadExercises() {
-    const library = app.globalData.exerciseLibrary || [];
+  async loadExercises() {
+    let library = app.globalData.exerciseLibrary || [];
+    if (library.length === 0) {
+      library = await loadExerciseLibrary();
+      app.globalData.exerciseLibrary = library;
+    }
     const complete = library.filter(ex => ex.instructions && (ex.image || ex.gif_url));
     const categories = ['all', ...new Set(complete.map(ex => ex.body_part))];
-    this.setData({ exercises: complete, categories });
+    this.setData({ categories });
     this.filterExercises();
   },
 

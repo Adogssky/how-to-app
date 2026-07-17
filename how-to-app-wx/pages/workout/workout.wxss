@@ -339,3 +339,145 @@
   opacity: 1;
   pointer-events: all;
 }
+
+/* ===== History ===== */
+.calendar-header {
+  font-size: 36rpx;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 32rpx;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12rpx;
+  margin-bottom: 32rpx;
+}
+
+.calendar-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  background: var(--surface-solid);
+  border: 1rpx solid var(--line);
+}
+
+.calendar-cell.header {
+  background: transparent;
+  border: none;
+  font-weight: 800;
+  color: var(--text-secondary);
+}
+
+.calendar-cell.empty {
+  background: transparent;
+  border: none;
+}
+
+.calendar-cell.day {
+  color: var(--text);
+}
+
+.calendar-cell.day.has-workout {
+  background: var(--success);
+  color: #fff;
+  border-color: var(--success);
+}
+
+.calendar-cell.day.today {
+  box-shadow: 0 0 0 4rpx var(--primary);
+}
+
+.history-detail {
+  padding: 32rpx;
+}
+
+.history-date {
+  font-size: 32rpx;
+  font-weight: 800;
+  margin-bottom: 24rpx;
+}
+
+.history-exercise {
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid var(--line);
+}
+
+.history-exercise:last-child {
+  border-bottom: none;
+}
+
+.history-exercise-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  margin-bottom: 8rpx;
+}
+
+.history-exercise-sets {
+  font-size: 26rpx;
+  color: var(--text-secondary);
+}
+
+/* ===== Body ===== */
+.figure-area {
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.figure-img {
+  width: 100%;
+  height: 480rpx;
+}
+
+.figure-legend {
+  display: flex;
+  gap: 32rpx;
+  margin-top: 16rpx;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 26rpx;
+  color: var(--text-secondary);
+}
+
+.legend-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+}
+
+.big3-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
+}
+
+.big3-item {
+  background: var(--bg);
+  border-radius: 16rpx;
+  padding: 24rpx;
+  text-align: center;
+}
+
+.big3-label {
+  display: block;
+  font-size: 24rpx;
+  color: var(--text-secondary);
+  margin-bottom: 8rpx;
+}
+
+.big3-value {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 800;
+}
