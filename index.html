@@ -24,15 +24,15 @@
           <h1 class="main-question fade-item" data-delay="200">How to <span>……?</span></h1>
           <p class="main-subtitle fade-item" data-delay="500">Pick one to get started.</p>
         </div>
-        <div class="home-cards-scroll" id="home-cards-scroll">
-          <div id="home-cards-container" class="home-cards-container"><!-- 动态渲染程序卡片 --></div>
-          <button class="refresh-btn" id="refresh-btn" type="button" title="Refresh recommendations">
-            <span class="refresh-icon">↻</span>
-            <span class="refresh-label">Refresh</span>
-          </button>
+        <div class="home-carousel" id="home-cards-scroll">
+          <div class="home-cards-track" id="home-cards-container"><!-- 动态渲染程序卡片 --></div>
+          <div class="home-dots" id="home-dots"></div>
         </div>
       </div>
       <div class="home-more fade-item" data-delay="1200" id="home-more">
+        <button class="refresh-btn" id="refresh-btn" type="button" title="Refresh recommendations">
+          <span class="refresh-icon">↻</span>
+        </button>
         <button class="more-btn" id="more-btn" type="button">I know how to……</button>
       </div>
     </section>

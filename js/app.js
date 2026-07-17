@@ -67,6 +67,8 @@ const programLibrary = [
 ];
 
 let currentPrograms = [];
+let homeCardIndex = 0;
+let homeSwipeMoved = false;
 
 // ===================== 数据：自行车 =====================
 const bikeData = {
@@ -534,10 +536,14 @@ function getProgramsToShow() {
 
 function renderHomeCards() {
   currentPrograms = getProgramsToShow();
+  homeCardIndex = 0;
   const container = document.getElementById('home-cards-container');
   container.innerHTML = currentPrograms.map((p, i) => `
-    <div class="home-program-card card-gradient-${p.gradient} pop-in" data-delay="${800 + i * 100}"
-      onclick="openProgramCard('${p.screen}', '${p.id}')">
+    <div class="home-program-card card-gradient-${p.gradient} ${getHomeCardClass(i)}"
+      data-index="${i}"
+      onclick="onHomeCardClick('${p.screen}', '${p.id}')"
+      ontouchstart="handleHomeTouchStart(event)"
+      ontouchend="handleHomeTouchEnd(event)">
       <div class="card-icon">${p.icon}</div>
       <div>
         <h3>${p.title}</h3>
@@ -547,12 +553,50 @@ function renderHomeCards() {
     </div>
   `).join('');
 
-  // stagger pop-in
-  setTimeout(() => {
-    container.querySelectorAll('.pop-in').forEach((el, i) => {
-      setTimeout(() => el.classList.add('show'), i * 100);
-    });
-  }, 50);
+  renderHomeDots();
+}
+
+function onHomeCardClick(screen, id) {
+  if (homeSwipeMoved) return;
+  openProgramCard(screen, id);
+}
+
+function getHomeCardClass(i) {
+  if (i === homeCardIndex) return 'active';
+  if (i === homeCardIndex - 1) return 'prev';
+  if (i === homeCardIndex + 1) return 'next';
+  return 'far';
+}
+
+function renderHomeDots() {
+  const dots = document.getElementById('home-dots');
+  if (!dots) return;
+  dots.innerHTML = currentPrograms.map((_, i) => `
+    <div class="home-dot ${i === homeCardIndex ? 'active' : ''}" onclick="goToHomeCard(${i})"></div>
+  `).join('');
+}
+
+function goToHomeCard(i) {
+  if (!currentPrograms.length || i < 0 || i >= currentPrograms.length) return;
+  homeCardIndex = i;
+  document.querySelectorAll('#home-cards-container .home-program-card').forEach((el, idx) => {
+    el.className = `home-program-card card-gradient-${currentPrograms[idx].gradient} ${getHomeCardClass(idx)}`;
+  });
+  renderHomeDots();
+}
+
+function handleHomeTouchStart(e) {
+  touchStartX = e.changedTouches[0].screenX;
+  homeSwipeMoved = false;
+}
+
+function handleHomeTouchEnd(e) {
+  const dx = e.changedTouches[0].screenX - touchStartX;
+  if (Math.abs(dx) > 30) {
+    homeSwipeMoved = true;
+    if (dx < -50) goToHomeCard(homeCardIndex + 1);
+    if (dx > 50) goToHomeCard(homeCardIndex - 1);
+  }
 }
 
 function openProgramCard(screen, id) {
@@ -591,12 +635,12 @@ function refreshPrograms() {
   btn.classList.add('spin');
   const container = document.getElementById('home-cards-container');
   container.style.opacity = '0';
-  container.style.transform = 'translateY(10px)';
+  container.style.transform = 'scale(0.96)';
 
   setTimeout(() => {
     renderHomeCards();
     container.style.opacity = '1';
-    container.style.transform = 'translateY(0)';
+    container.style.transform = 'scale(1)';
     btn.classList.remove('spin');
   }, 400);
 }
