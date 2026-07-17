@@ -9,22 +9,28 @@
 
 .search-input {
   width: 100%;
-  padding: 24rpx 32rpx;
+  height: 88rpx;
+  padding: 0 32rpx;
   border: 1rpx solid var(--line);
   border-radius: 50rpx;
   background: var(--surface-solid);
   font-size: 30rpx;
   box-sizing: border-box;
+  line-height: 88rpx;
 }
 
 .category-chips {
   display: flex;
+  flex-direction: row;
   gap: 16rpx;
   padding: 0 32rpx 24rpx;
   overflow-x: auto;
+  white-space: nowrap;
 }
 
 .category-chip {
+  flex: 0 0 auto;
+  display: inline-flex;
   padding: 16rpx 32rpx;
   border-radius: 40rpx;
   border: 1rpx solid var(--line);
@@ -32,6 +38,8 @@
   font-size: 26rpx;
   color: var(--text-secondary);
   white-space: nowrap;
+  margin: 0;
+  line-height: 1;
 }
 
 .category-chip.active {
