@@ -719,16 +719,27 @@ function renderWorkoutToday() {
     currentCardIndex = 0;
     showActiveWorkout();
   } else {
-    document.getElementById('workout-empty').classList.remove('hidden');
-    document.getElementById('workout-cards-area').classList.add('hidden');
+    // Demo 首次进入自动创建默认训练
+    startDefaultWorkout();
   }
 }
 
-function startWorkout() {
-  activeWorkout = { date: todayKey(), exercises: [] };
+function startDefaultWorkout() {
+  activeWorkout = {
+    date: todayKey(),
+    exercises: [
+      { name: 'Squat', sets: [{ weight: '', reps: '', completed: false }] },
+      { name: 'Bench Press', sets: [{ weight: '', reps: '', completed: false }] },
+      { name: 'Deadlift', sets: [{ weight: '', reps: '', completed: false }] }
+    ]
+  };
   saveActiveWorkout();
   currentCardIndex = 0;
   showActiveWorkout();
+}
+
+function startWorkout() {
+  startDefaultWorkout();
 }
 
 function showActiveWorkout() {
