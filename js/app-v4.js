@@ -1226,7 +1226,11 @@ function loadExerciseLibrary() {
 let selectedCategory = 'all';
 
 function renderExercisePicker() {
-  const categories = ['all', ...new Set(exerciseLibrary.map(ex => ex.body_part))];
+  const completeExercises = exerciseLibrary.filter(hasCompleteExerciseInfo);
+  const categories = ['all', ...new Set(completeExercises.map(ex => ex.body_part))];
+  if (!categories.includes(selectedCategory)) {
+    selectedCategory = 'all';
+  }
   const chips = document.getElementById('exercise-categories');
   chips.innerHTML = categories.map(c => `
     <button class="category-chip ${selectedCategory === c ? 'active' : ''}" onclick="setCategory('${c}')">${c}</button>
@@ -1246,9 +1250,16 @@ function openBlankCardPicker(i) {
   addExercise();
 }
 
+function hasCompleteExerciseInfo(ex) {
+  const hasInstructions = !!(ex.instructions && ex.instructions.trim().length > 0);
+  const hasImage = !!(ex.image && ex.image.trim().length > 0) || !!(ex.gif_url && ex.gif_url.trim().length > 0);
+  return hasInstructions && hasImage;
+}
+
 function filterExercises() {
   const q = document.getElementById('exercise-search').value.toLowerCase().trim();
   const filtered = exerciseLibrary.filter(ex => {
+    if (!hasCompleteExerciseInfo(ex)) return false;
     const matchCat = selectedCategory === 'all' || ex.body_part === selectedCategory;
     const matchQ = ex.name.toLowerCase().includes(q) || ex.equipment.toLowerCase().includes(q);
     return matchCat && matchQ;
