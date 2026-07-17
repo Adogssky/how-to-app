@@ -697,17 +697,17 @@ body {
 
 .cards-carousel {
   width: 100%;
-  max-width: 360px;
+  max-width: 380px;
   height: 520px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
-  padding: 0 10%;
+  padding: 0 5%;
   box-sizing: border-box;
 }
 
@@ -716,8 +716,8 @@ body {
 }
 
 .exercise-card {
-  flex: 0 0 80%;
-  width: 80%;
+  flex: 0 0 88%;
+  width: 88%;
   height: 100%;
   scroll-snap-align: center;
   border-radius: var(--radius);
@@ -729,6 +729,35 @@ body {
   transition: transform 0.3s ease, opacity 0.3s ease;
   overflow: hidden;
   user-select: none;
+  box-sizing: border-box;
+}
+
+.exercise-card.blank-card {
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border-style: dashed;
+  cursor: pointer;
+}
+
+.blank-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-secondary);
+}
+
+.blank-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 300;
 }
 
 .exercise-card:nth-child(5n+1) { background: linear-gradient(160deg, #ffffff 0%, var(--c-lavender) 100%); }
@@ -1111,16 +1140,114 @@ body {
 
 .exercise-result-item {
   background: var(--surface);
-  padding: 16px;
+  padding: 14px 16px;
   cursor: pointer;
   transition: background 0.15s ease;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .exercise-result-item:hover {
   background: var(--bg);
+}
+
+.exercise-result-item .picker-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.picker-image {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.picker-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.picker-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.picker-name {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.picker-select {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: none;
+  background: var(--text);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.picker-desc-wrap {
+  width: 100%;
+}
+
+.picker-desc-toggle {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+
+.picker-desc {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.picker-desc p {
+  margin: 0;
+}
+
+.picker-gif {
+  width: 100%;
+  max-height: 180px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--bg);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.picker-gif img,
+.details-gif img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .exercise-result-item .ex-meta {
@@ -1128,7 +1255,50 @@ body {
   color: var(--text-secondary);
 }
 
-/* Panels */
+/* Exercise card details */
+.details-toggle {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
+  margin-bottom: 12px;
+  align-self: flex-start;
+}
+
+.exercise-details {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.details-gif {
+  width: 100%;
+  height: 160px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--surface);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gif-placeholder {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.details-desc {
+  margin: 0;
+}
 .panel-overlay {
   position: fixed;
   inset: 0;

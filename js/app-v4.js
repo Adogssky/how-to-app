@@ -343,24 +343,25 @@ const bikeSVGs = {
 
 // ===================== 数据：训练动作（内置 fallback）====================
 const builtInExercises = [
-  { id: 'b1', name: 'Squat', body_part: 'upper legs', equipment: 'barbell', category: 'strength' },
-  { id: 'b2', name: 'Bench Press', body_part: 'chest', equipment: 'barbell', category: 'strength' },
-  { id: 'b3', name: 'Deadlift', body_part: 'back', equipment: 'barbell', category: 'strength' },
-  { id: 'b4', name: 'Overhead Press', body_part: 'shoulders', equipment: 'barbell', category: 'strength' },
-  { id: 'b5', name: 'Barbell Row', body_part: 'back', equipment: 'barbell', category: 'strength' },
-  { id: 'b6', name: 'Pull Up', body_part: 'back', equipment: 'body weight', category: 'strength' },
-  { id: 'b7', name: 'Dumbbell Lunge', body_part: 'upper legs', equipment: 'dumbbell', category: 'strength' },
-  { id: 'b8', name: 'Push Up', body_part: 'chest', equipment: 'body weight', category: 'strength' },
-  { id: 'b9', name: 'Leg Press', body_part: 'upper legs', equipment: 'machine', category: 'strength' },
-  { id: 'b10', name: 'Lat Pulldown', body_part: 'back', equipment: 'cable', category: 'strength' },
-  { id: 'b11', name: 'Bicep Curl', body_part: 'upper arms', equipment: 'dumbbell', category: 'strength' },
-  { id: 'b12', name: 'Tricep Extension', body_part: 'upper arms', equipment: 'cable', category: 'strength' },
-  { id: 'b13', name: 'Plank', body_part: 'waist', equipment: 'body weight', category: 'strength' },
-  { id: 'b14', name: 'Treadmill Run', body_part: 'cardio', equipment: 'machine', category: 'cardio' },
-  { id: 'b15', name: 'Rowing Machine', body_part: 'cardio', equipment: 'machine', category: 'cardio' }
+  { id: 'b1', name: 'Squat', body_part: 'upper legs', equipment: 'barbell', category: 'strength', instructions: 'Stand with feet shoulder-width apart, lower your hips back and down, then stand back up.', image: '', gif_url: '' },
+  { id: 'b2', name: 'Bench Press', body_part: 'chest', equipment: 'barbell', category: 'strength', instructions: 'Lie on a bench, press the bar from your chest to full arm extension.', image: '', gif_url: '' },
+  { id: 'b3', name: 'Deadlift', body_part: 'back', equipment: 'barbell', category: 'strength', instructions: 'Lift the bar from the ground by extending your hips and knees.', image: '', gif_url: '' },
+  { id: 'b4', name: 'Overhead Press', body_part: 'shoulders', equipment: 'barbell', category: 'strength', instructions: 'Press the bar from shoulder height to overhead.', image: '', gif_url: '' },
+  { id: 'b5', name: 'Barbell Row', body_part: 'back', equipment: 'barbell', category: 'strength', instructions: 'Bend over and pull the bar to your lower chest.', image: '', gif_url: '' },
+  { id: 'b6', name: 'Pull Up', body_part: 'back', equipment: 'body weight', category: 'strength', instructions: 'Hang from a bar and pull your chin over it.', image: '', gif_url: '' },
+  { id: 'b7', name: 'Dumbbell Lunge', body_part: 'upper legs', equipment: 'dumbbell', category: 'strength', instructions: 'Step forward into a lunge holding dumbbells.', image: '', gif_url: '' },
+  { id: 'b8', name: 'Push Up', body_part: 'chest', equipment: 'body weight', category: 'strength', instructions: 'Lower your chest to the floor and push back up.', image: '', gif_url: '' },
+  { id: 'b9', name: 'Leg Press', body_part: 'upper legs', equipment: 'machine', category: 'strength', instructions: 'Push the platform away by extending your legs.', image: '', gif_url: '' },
+  { id: 'b10', name: 'Lat Pulldown', body_part: 'back', equipment: 'cable', category: 'strength', instructions: 'Pull the bar down to your upper chest.', image: '', gif_url: '' },
+  { id: 'b11', name: 'Bicep Curl', body_part: 'upper arms', equipment: 'dumbbell', category: 'strength', instructions: 'Curl the dumbbells by flexing your elbows.', image: '', gif_url: '' },
+  { id: 'b12', name: 'Tricep Extension', body_part: 'upper arms', equipment: 'cable', category: 'strength', instructions: 'Extend your arms to push the cable down.', image: '', gif_url: '' },
+  { id: 'b13', name: 'Plank', body_part: 'waist', equipment: 'body weight', category: 'strength', instructions: 'Hold a straight body position on your forearms and toes.', image: '', gif_url: '' },
+  { id: 'b14', name: 'Treadmill Run', body_part: 'cardio', equipment: 'machine', category: 'cardio', instructions: 'Run at a steady pace on the treadmill.', image: '', gif_url: '' },
+  { id: 'b15', name: 'Rowing Machine', body_part: 'cardio', equipment: 'machine', category: 'cardio', instructions: 'Row with proper drive and recovery sequence.', image: '', gif_url: '' }
 ];
 
 const exerciseImageBase = 'https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/images/';
+const exerciseVideoBase = 'https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/';
 
 // ===================== IndexedDB 图片缓存 =====================
 const DB_NAME = 'howto-images';
@@ -419,10 +420,9 @@ async function cacheImage(url, blob) {
   }
 }
 
-async function loadExerciseImage(name) {
-  const ex = findExerciseByName(name);
-  if (!ex || !ex.image) return null;
-  const filename = ex.image.split('/').pop();
+async function loadExerciseImage(exercise) {
+  if (!exercise || !exercise.image) return null;
+  const filename = exercise.image.split('/').pop();
   const url = exerciseImageBase + filename;
 
   // 1. Check IndexedDB cache
@@ -440,6 +440,13 @@ async function loadExerciseImage(name) {
     console.log('Image load failed:', url);
     return null;
   }
+}
+
+async function loadExerciseGif(exercise) {
+  if (!exercise || !exercise.gif_url) return null;
+  const filename = exercise.gif_url.split('/').pop();
+  const url = exerciseVideoBase + filename;
+  return url;
 }
 
 // ===================== 状态 =====================
@@ -771,11 +778,7 @@ function renderWorkoutToday() {
 function startDefaultWorkout() {
   activeWorkout = {
     date: todayKey(),
-    exercises: [
-      { name: 'Squat', sets: [{ weight: '', reps: '', completed: false }] },
-      { name: 'Bench Press', sets: [{ weight: '', reps: '', completed: false }] },
-      { name: 'Deadlift', sets: [{ weight: '', reps: '', completed: false }] }
-    ]
+    exercises: [{ type: 'blank' }]
   };
   saveActiveWorkout();
   currentCardIndex = 0;
@@ -795,45 +798,105 @@ function showActiveWorkout() {
 function renderCards() {
   const carousel = document.getElementById('cards-carousel');
 
-  if (!activeWorkout || activeWorkout.exercises.length === 0) {
-    carousel.innerHTML = '';
-    document.getElementById('card-dots').innerHTML = '';
-    return;
-  }
+  if (!activeWorkout) return;
+  ensureBlankCard();
 
   carousel.innerHTML = activeWorkout.exercises.map((ex, i) => {
-    const setsHtml = ex.sets.map((set, si) => renderSetRow(ex, i, si)).join('');
-    const total = ex.sets.length;
-    const completed = ex.sets.filter(s => s.completed).length;
-
-    return `
-      <div class="exercise-card ${getCardClass(i)}" data-index="${i}">
-        <div class="card-pattern"></div>
-        <div class="card-image-area" id="card-img-${i}">
-          <div class="card-image-placeholder">${getExerciseEmoji(ex.name)}</div>
-        </div>
-        <h3>${ex.name}</h3>
-        <div class="card-sub">Set ${completed}/${total} completed</div>
-        <div class="sets-list">${setsHtml}</div>
-        <div class="card-actions">
-          <button onclick="addSet(${i})">+ Add set</button>
-          <button onclick="removeExercise(${i})">Remove</button>
-        </div>
-      </div>
-    `;
+    if (ex.type === 'blank') return renderBlankCard(i);
+    return renderExerciseCard(ex, i);
   }).join('');
 
-  // 初始滚动到当前卡片
   setTimeout(() => {
-    const card = carousel.children[currentCardIndex];
-    if (card) {
-      const scrollLeft = card.offsetLeft - (carousel.clientWidth - card.clientWidth) / 2;
-      carousel.scrollTo({ left: scrollLeft, behavior: 'instant' });
-    }
+    scrollToCard(currentCardIndex, 'instant');
     updateCardClasses();
     renderCardDots();
     preloadCardImages();
   }, 0);
+}
+
+function renderBlankCard(i) {
+  return `
+    <div class="exercise-card blank-card ${getCardClass(i)}" data-index="${i}" onclick="openBlankCardPicker(${i})">
+      <div class="blank-card-content">
+        <div class="blank-icon">+</div>
+        <p>Add exercise</p>
+      </div>
+    </div>
+  `;
+}
+
+function renderExerciseCard(ex, i) {
+  const setsHtml = ex.sets.map((set, si) => renderSetRow(ex, i, si)).join('');
+  const total = ex.sets.length;
+  const completed = ex.sets.filter(s => s.completed).length;
+  const detailsId = `ex-details-${i}`;
+
+  return `
+    <div class="exercise-card ${getCardClass(i)}" data-index="${i}">
+      <div class="card-pattern"></div>
+      <div class="card-image-area" id="card-img-${i}">
+        <div class="card-image-placeholder">${getExerciseEmoji(ex.name)}</div>
+      </div>
+      <h3>${ex.name}</h3>
+      <div class="card-sub">Set ${completed}/${total} completed · ${ex.equipment}</div>
+      <button class="details-toggle" onclick="toggleExerciseDetails(${i})">Details ▼</button>
+      <div class="exercise-details hidden" id="${detailsId}">
+        <div class="details-gif" id="details-gif-${i}">
+          <div class="gif-placeholder">Loading…</div>
+        </div>
+        <p class="details-desc">${escapeHtml(ex.instructions || 'No description available.')}</p>
+      </div>
+      <div class="sets-list">${setsHtml}</div>
+      <div class="card-actions">
+        <button onclick="addSet(${i})">+ Add set</button>
+        <button onclick="removeExercise(${i})">Remove</button>
+      </div>
+    </div>
+  `;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function toggleExerciseDetails(i) {
+  const el = document.getElementById(`ex-details-${i}`);
+  if (!el) return;
+  el.classList.toggle('hidden');
+  const btn = document.querySelectorAll('.exercise-card')[i].querySelector('.details-toggle');
+  if (btn) btn.textContent = el.classList.contains('hidden') ? 'Details ▼' : 'Details ▲';
+
+  if (!el.classList.contains('hidden') && !el.dataset.loaded) {
+    const ex = activeWorkout.exercises[i];
+    loadExerciseGif(ex).then(url => {
+      const gifArea = document.getElementById(`details-gif-${i}`);
+      if (gifArea) {
+        if (url) {
+          gifArea.innerHTML = `<img src="${url}" alt="${ex.name}" class="details-gif-img">`;
+        } else {
+          gifArea.innerHTML = `<div class="gif-placeholder">No preview</div>`;
+        }
+      }
+    });
+    el.dataset.loaded = 'true';
+  }
+}
+
+function ensureBlankCard() {
+  const last = activeWorkout.exercises[activeWorkout.exercises.length - 1];
+  if (!last || last.type !== 'blank') {
+    activeWorkout.exercises.push({ type: 'blank' });
+  }
+}
+
+function scrollToCard(i, behavior) {
+  const carousel = document.getElementById('cards-carousel');
+  const card = carousel.children[i];
+  if (!card) return;
+  const scrollLeft = card.offsetLeft - (carousel.clientWidth - card.clientWidth) / 2;
+  carousel.scrollTo({ left: scrollLeft, behavior: behavior || 'smooth' });
 }
 
 function preloadCardImages() {
@@ -847,10 +910,11 @@ function preloadCardImages() {
 
 async function loadCardImage(idx) {
   const ex = activeWorkout.exercises[idx];
+  if (!ex || ex.type === 'blank') return;
   const area = document.getElementById(`card-img-${idx}`);
   if (!area || area.dataset.loaded) return;
 
-  const url = await loadExerciseImage(ex.name);
+  const url = await loadExerciseImage(ex);
   if (url) {
     area.innerHTML = `<img src="${url}" alt="${ex.name}" class="card-image">`;
     area.dataset.loaded = 'true';
@@ -867,12 +931,7 @@ function getCardClass(i) {
 function goToCard(i) {
   if (!activeWorkout || i < 0 || i >= activeWorkout.exercises.length) return;
   currentCardIndex = i;
-  const carousel = document.getElementById('cards-carousel');
-  const card = carousel.children[i];
-  if (card) {
-    const scrollLeft = card.offsetLeft - (carousel.clientWidth - card.clientWidth) / 2;
-    carousel.scrollTo({ left: scrollLeft, behavior: 'smooth' });
-  }
+  scrollToCard(i, 'smooth');
   updateCardClasses();
   renderCardDots();
 }
@@ -880,7 +939,8 @@ function goToCard(i) {
 function updateCardClasses() {
   const carousel = document.getElementById('cards-carousel');
   Array.from(carousel.children).forEach((el, idx) => {
-    el.className = `exercise-card ${getCardClass(idx)}`;
+    const baseClass = el.classList.contains('blank-card') ? 'exercise-card blank-card' : 'exercise-card';
+    el.className = `${baseClass} ${getCardClass(idx)}`;
   });
 }
 
@@ -927,30 +987,21 @@ function findExerciseByName(name) {
 
 function renderSetRow(ex, exIndex, setIndex) {
   const set = ex.sets[setIndex];
-  const isCurrent = isCurrentSet(exIndex, setIndex);
+  const hasValues = (parseFloat(set.weight) > 0) && (parseFloat(set.reps) > 0);
   const isDone = set.completed;
 
-  let btnClass = 'locked';
-  let btnText = 'Locked';
-  let onclick = '';
-
+  let btnHtml = '';
   if (isDone) {
-    btnClass = 'done';
-    btnText = 'Done';
-  } else if (isCurrent) {
-    if (set.timerMode === 'lifting') {
-      btnClass = 'stop';
-      btnText = 'Stop';
-      onclick = `onclick="stopSet(${exIndex}, ${setIndex})"`;
-    } else if (set.timerMode === 'rest') {
-      btnClass = 'skip';
-      btnText = 'Skip';
-      onclick = `onclick="skipRest(${exIndex}, ${setIndex})"`;
-    } else {
-      btnClass = 'start';
-      btnText = 'Start';
-      onclick = `onclick="startSet(${exIndex}, ${setIndex})"`;
-    }
+    const restText = formatRestTime(set.restSeconds || 0);
+    btnHtml = `<button class="set-btn done" disabled>${restText}</button>`;
+  } else if (set.timerMode === 'lifting') {
+    btnHtml = `<button class="set-btn stop" onclick="stopSet(${exIndex}, ${setIndex})">Stop</button>`;
+  } else if (set.timerMode === 'rest') {
+    btnHtml = `<button class="set-btn next" onclick="completeSet(${exIndex}, ${setIndex})">Next set!</button>`;
+  } else if (hasValues) {
+    btnHtml = `<button class="set-btn start" onclick="startSet(${exIndex}, ${setIndex})">Start</button>`;
+  } else {
+    btnHtml = `<button class="set-btn locked" disabled>Start</button>`;
   }
 
   return `
@@ -962,21 +1013,15 @@ function renderSetRow(ex, exIndex, setIndex) {
       <input type="number" placeholder="reps" value="${set.reps || ''}"
         onchange="updateSet(${exIndex}, ${setIndex}, 'reps', this.value)"
         ${isDone ? 'disabled' : ''}>
-      <button class="set-btn ${btnClass}" ${onclick}>${btnText}</button>
+      ${btnHtml}
     </div>
   `;
 }
 
-function isCurrentSet(exIndex, setIndex) {
-  for (let e = 0; e < activeWorkout.exercises.length; e++) {
-    const ex = activeWorkout.exercises[e];
-    for (let s = 0; s < ex.sets.length; s++) {
-      if (!ex.sets[s].completed) {
-        return e === exIndex && s === setIndex;
-      }
-    }
-  }
-  return false;
+function formatRestTime(seconds) {
+  const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+  const s = (seconds % 60).toString().padStart(2, '0');
+  return `${m}:${s}`;
 }
 
 function startSet(exIndex, setIndex) {
@@ -1008,49 +1053,36 @@ function stopSet(exIndex, setIndex) {
   clearTimers();
   const set = activeWorkout.exercises[exIndex].sets[setIndex];
   set.timerMode = 'rest';
-  set.timerSeconds = 90;
+  set.timerSeconds = 0;
   saveActiveWorkout();
 
   currentTimerSet = { exIndex, setIndex };
   timerMode = 'rest';
-  timerSeconds = 90;
-  openTimerModal('Rest', 'Skip', skipRestFromModal);
+  timerSeconds = 0;
+  openTimerModal('Rest', 'Next set!', completeSetFromModal);
 
   activeRestTimer = setInterval(() => {
-    timerSeconds--;
+    timerSeconds++;
     set.timerSeconds = timerSeconds;
     updateTimerDisplay();
     saveActiveWorkout();
-    if (timerSeconds <= 0) {
-      completeSet(exIndex, setIndex);
-    }
   }, 1000);
 }
 
-function skipRestFromModal() {
+function completeSetFromModal() {
   if (!currentTimerSet) return;
-  skipRest(currentTimerSet.exIndex, currentTimerSet.setIndex);
-}
-
-function skipRest(exIndex, setIndex) {
-  clearTimers();
-  closeTimerModal();
-  completeSet(exIndex, setIndex);
+  completeSet(currentTimerSet.exIndex, currentTimerSet.setIndex);
 }
 
 function completeSet(exIndex, setIndex) {
   clearTimers();
   closeTimerModal();
   const set = activeWorkout.exercises[exIndex].sets[setIndex];
+  set.restSeconds = timerSeconds || set.timerSeconds || 0;
   set.completed = true;
   set.timerMode = 'idle';
   set.timerSeconds = 0;
   saveActiveWorkout();
-
-  const ex = activeWorkout.exercises[exIndex];
-  if (setIndex === ex.sets.length - 1 && exIndex < activeWorkout.exercises.length - 1) {
-    currentCardIndex = exIndex + 1;
-  }
   renderCards();
   updateBodyBig3();
 }
@@ -1067,7 +1099,7 @@ function openTimerModal(label, actionText, actionFn) {
   const actionBtn = document.getElementById('timer-action-btn');
   actionBtn.textContent = actionText;
   actionBtn.onclick = actionFn;
-  document.getElementById('timer-skip-btn').style.display = label === 'Rest' ? 'inline-block' : 'none';
+  document.getElementById('timer-skip-btn').style.display = 'none';
   updateTimerDisplay();
   document.getElementById('timer-modal').classList.add('active');
 }
@@ -1085,10 +1117,12 @@ function updateTimerDisplay() {
 function updateSet(exIndex, setIndex, field, value) {
   activeWorkout.exercises[exIndex].sets[setIndex][field] = parseFloat(value) || 0;
   saveActiveWorkout();
+  // 输入后可能需要重新渲染以显示/隐藏 Start 按钮
+  renderCards();
 }
 
 function addSet(exIndex) {
-  activeWorkout.exercises[exIndex].sets.push({ weight: '', reps: '', completed: false });
+  activeWorkout.exercises[exIndex].sets.push({ weight: '', reps: '', completed: false, restSeconds: 0 });
   saveActiveWorkout();
   renderCards();
 }
@@ -1100,12 +1134,7 @@ function removeExercise(exIndex) {
     currentCardIndex = Math.max(0, activeWorkout.exercises.length - 1);
   }
   saveActiveWorkout();
-  if (activeWorkout.exercises.length === 0) {
-    document.getElementById('workout-empty').classList.remove('hidden');
-    document.getElementById('workout-cards-area').classList.add('hidden');
-  } else {
-    renderCards();
-  }
+  renderCards();
 }
 
 function saveActiveWorkout() {
@@ -1145,7 +1174,9 @@ function loadExerciseLibrary() {
         body_part: ex.body_part || ex.category,
         equipment: ex.equipment,
         category: 'strength',
-        image: ex.image
+        instructions: ex.instructions?.en || '',
+        image: ex.image,
+        gif_url: ex.gif_url
       }));
       exerciseLibrary = [...normalized, ...builtInExercises];
       const seen = new Set();
@@ -1177,6 +1208,13 @@ function setCategory(cat) {
   renderExercisePicker();
 }
 
+let blankPickerIndex = null;
+
+function openBlankCardPicker(i) {
+  blankPickerIndex = i;
+  addExercise();
+}
+
 function filterExercises() {
   const q = document.getElementById('exercise-search').value.toLowerCase().trim();
   const filtered = exerciseLibrary.filter(ex => {
@@ -1193,21 +1231,93 @@ function filterExercises() {
 
   results.innerHTML = filtered.slice(0, 50).map(ex => {
     const safeName = ex.name.replace(/"/g, '&quot;');
+    const descShort = escapeHtml((ex.instructions || '').slice(0, 120));
+    const hasDesc = (ex.instructions || '').length > 120;
+    const descId = `picker-desc-${ex.id}`;
     return `
-      <div class="exercise-result-item" onclick="selectExercise('${safeName}')">
-        <span>${ex.name}</span>
-        <span class="ex-meta">${ex.body_part} · ${ex.equipment}</span>
+      <div class="exercise-result-item">
+        <div class="picker-main" onclick="selectExercise('${safeName}')">
+          <div class="picker-image" id="picker-img-${ex.id}">${getExerciseEmoji(ex.name)}</div>
+          <div class="picker-info">
+            <span class="picker-name">${ex.name}</span>
+            <span class="ex-meta">${ex.body_part} · ${ex.equipment}</span>
+          </div>
+          <button class="picker-select" onclick="event.stopPropagation(); selectExercise('${safeName}')">Select</button>
+        </div>
+        ${ex.instructions ? `
+          <div class="picker-desc-wrap">
+            <button class="picker-desc-toggle" onclick="togglePickerDesc('${ex.id}', '${safeName}')">View description ▼</button>
+            <div class="picker-desc hidden" id="${descId}">
+              <div class="picker-gif" id="picker-gif-${ex.id}"></div>
+              <p>${descShort}${hasDesc ? '…' : ''}</p>
+            </div>
+          </div>
+        ` : ''}
       </div>
     `;
   }).join('');
+
+  // 异步加载图片
+  filtered.slice(0, 50).forEach(ex => {
+    loadExerciseImage(ex).then(url => {
+      const area = document.getElementById(`picker-img-${ex.id}`);
+      if (area && url) {
+        area.innerHTML = `<img src="${url}" alt="${ex.name}" class="picker-thumb">`;
+      }
+    });
+  });
+}
+
+function togglePickerDesc(id, name) {
+  const el = document.getElementById(`picker-desc-${id}`);
+  if (!el) return;
+  el.classList.toggle('hidden');
+  const btn = el.previousElementSibling;
+  btn.textContent = el.classList.contains('hidden') ? 'View description ▼' : 'Hide description ▲';
+
+  if (!el.classList.contains('hidden') && !el.dataset.loaded) {
+    const ex = exerciseLibrary.find(x => x.id === id || x.name === name);
+    if (ex) {
+      loadExerciseGif(ex).then(url => {
+        const gifArea = document.getElementById(`picker-gif-${id}`);
+        if (gifArea) {
+          if (url) {
+            gifArea.innerHTML = `<img src="${url}" alt="${ex.name}" class="picker-gif-img">`;
+          } else {
+            gifArea.innerHTML = '<div class="gif-placeholder">No preview</div>';
+          }
+        }
+      });
+    }
+    el.dataset.loaded = 'true';
+  }
 }
 
 function selectExercise(name) {
-  activeWorkout.exercises.push({
-    name: name,
-    sets: [{ weight: '', reps: '', completed: false }]
-  });
-  currentCardIndex = activeWorkout.exercises.length - 1;
+  const ex = findExerciseByName(name);
+  if (!ex) return;
+
+  const newExercise = {
+    type: 'exercise',
+    id: ex.id,
+    name: ex.name,
+    body_part: ex.body_part,
+    equipment: ex.equipment,
+    instructions: ex.instructions || '',
+    image: ex.image || '',
+    gif_url: ex.gif_url || '',
+    sets: [{ weight: '', reps: '', completed: false, restSeconds: 0 }]
+  };
+
+  if (blankPickerIndex !== null && activeWorkout.exercises[blankPickerIndex]?.type === 'blank') {
+    activeWorkout.exercises[blankPickerIndex] = newExercise;
+    currentCardIndex = blankPickerIndex;
+  } else {
+    activeWorkout.exercises.push(newExercise);
+    currentCardIndex = activeWorkout.exercises.length - 1;
+  }
+  blankPickerIndex = null;
+
   saveActiveWorkout();
   showScreen('screen-workout');
   showActiveWorkout();
