@@ -698,24 +698,35 @@ body {
 .cards-carousel {
   width: 100%;
   max-width: 360px;
-  position: relative;
   height: 520px;
-  perspective: 1000px;
-  touch-action: pan-y;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  padding: 0 10%;
+  box-sizing: border-box;
+}
+
+.cards-carousel::-webkit-scrollbar {
+  display: none;
 }
 
 .exercise-card {
-  position: absolute;
-  width: 82%;
-  left: 9%;
+  flex: 0 0 80%;
+  width: 80%;
   height: 100%;
+  scroll-snap-align: center;
   border-radius: var(--radius);
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
   padding: 24px;
   display: flex;
   flex-direction: column;
-  transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.3s ease, opacity 0.3s ease;
   overflow: hidden;
   user-select: none;
 }
@@ -727,26 +738,21 @@ body {
 .exercise-card:nth-child(5n+5) { background: linear-gradient(160deg, #ffffff 0%, var(--c-rose) 100%); }
 
 .exercise-card.active {
-  transform: translateX(0) scale(1);
   opacity: 1;
+  transform: scale(1);
   z-index: 5;
 }
 
-.exercise-card.prev {
-  transform: translateX(-108%) scale(0.8);
-  opacity: 0.35;
-  z-index: 3;
-}
-
+.exercise-card.prev,
 .exercise-card.next {
-  transform: translateX(108%) scale(0.8);
-  opacity: 0.35;
+  opacity: 0.5;
+  transform: scale(0.92);
   z-index: 3;
 }
 
 .exercise-card.far {
-  transform: translateX(0) scale(0.7);
-  opacity: 0;
+  opacity: 0.3;
+  transform: scale(0.86);
   z-index: 1;
 }
 

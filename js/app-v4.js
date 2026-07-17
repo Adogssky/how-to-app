@@ -794,11 +794,10 @@ function showActiveWorkout() {
 
 function renderCards() {
   const carousel = document.getElementById('cards-carousel');
-  const dots = document.getElementById('card-dots');
 
   if (!activeWorkout || activeWorkout.exercises.length === 0) {
     carousel.innerHTML = '';
-    dots.innerHTML = '';
+    document.getElementById('card-dots').innerHTML = '';
     return;
   }
 
@@ -808,9 +807,7 @@ function renderCards() {
     const completed = ex.sets.filter(s => s.completed).length;
 
     return `
-      <div class="exercise-card ${getCardClass(i)}" data-index="${i}"
-        ontouchstart="handleTouchStart(event)"
-        ontouchend="handleTouchEnd(event, ${i})">
+      <div class="exercise-card ${getCardClass(i)}" data-index="${i}">
         <div class="card-pattern"></div>
         <div class="card-image-area" id="card-img-${i}">
           <div class="card-image-placeholder">${getExerciseEmoji(ex.name)}</div>
@@ -826,11 +823,20 @@ function renderCards() {
     `;
   }).join('');
 
-  dots.innerHTML = activeWorkout.exercises.map((_, i) => `
-    <div class="card-dot ${i === currentCardIndex ? 'active' : ''}" onclick="goToCard(${i})"></div>
-  `).join('');
+  // 初始滚动到当前卡片
+  setTimeout(() => {
+    const card = carousel.children[currentCardIndex];
+    if (card) {
+      const scrollLeft = card.offsetLeft - (carousel.clientWidth - card.clientWidth) / 2;
+      carousel.scrollTo({ left: scrollLeft, behavior: 'instant' });
+    }
+    updateCardClasses();
+    renderCardDots();
+    preloadCardImages();
+  }, 0);
+}
 
-  // 异步加载当前和前/后卡片的图片
+function preloadCardImages() {
   [-1, 0, 1].forEach(offset => {
     const idx = currentCardIndex + offset;
     if (idx >= 0 && idx < activeWorkout.exercises.length) {
@@ -861,7 +867,28 @@ function getCardClass(i) {
 function goToCard(i) {
   if (!activeWorkout || i < 0 || i >= activeWorkout.exercises.length) return;
   currentCardIndex = i;
-  renderCards();
+  const carousel = document.getElementById('cards-carousel');
+  const card = carousel.children[i];
+  if (card) {
+    const scrollLeft = card.offsetLeft - (carousel.clientWidth - card.clientWidth) / 2;
+    carousel.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+  }
+  updateCardClasses();
+  renderCardDots();
+}
+
+function updateCardClasses() {
+  const carousel = document.getElementById('cards-carousel');
+  Array.from(carousel.children).forEach((el, idx) => {
+    el.className = `exercise-card ${getCardClass(idx)}`;
+  });
+}
+
+function renderCardDots() {
+  const dots = document.getElementById('card-dots');
+  dots.innerHTML = activeWorkout.exercises.map((_, i) => `
+    <div class="card-dot ${i === currentCardIndex ? 'active' : ''}" onclick="goToCard(${i})"></div>
+  `).join('');
 }
 
 let touchStartX = 0;
